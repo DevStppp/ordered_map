@@ -32,7 +32,7 @@ class ordered_map
     }
 
     explicit ordered_map(const size_type bucket_count,
-                            const Hash& hash = Hash()) noexcept
+                         const Hash& hash = Hash()) noexcept
       : m_list()
       , m_map(bucket_count, hash)
     {
@@ -352,7 +352,7 @@ class ordered_map
     list_type m_list;
     map_type m_map;
     std::mutex m_mutex;
-}; //class ordered_map
+};  //class ordered_map
 }  // namespace stppp
 
 namespace std {
