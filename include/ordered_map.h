@@ -1,6 +1,7 @@
 #ifndef STPPP_ORDERED_MAP_H
 #define STPPP_ORDERED_MAP_H
 
+#include <algorithm>
 #include <list>
 #include <mutex>
 #include <unordered_map>
@@ -71,7 +72,14 @@ class ordered_map
     {
         {
             _writeLocker lock(m_mutex);
-            m_list = rhs.m_list;
+
+            //std::pair<const key,value> = std::pair<const key, value>
+            //build error
+            m_list.clear();
+            std::for_each(rhs.m_list.begin(), rhs.m_list.end(), [&](const value_type& i) {
+                m_list.emplace_back(i.first, i.second);
+            });
+
             m_map = rhs.m_map;
         }
         return (*this);
@@ -261,14 +269,14 @@ class ordered_map
     // throw std::out_of_range
     iterator erase(const_iterator pos)
     {
-        //TODO : 확인 필요 
+        //TODO : 확인 필요
         //Test Code에서 end() 던졋을떄(modifier_test.h ln:94)
         //map.find에서 못찾을 줄알았는데 결과가 end가 아니네...
         //뭐지.....
         //map.find가 되네...이게...되네....
         if (pos == m_list.end())
             throw std::out_of_range("out of range iterator");
-        
+
         //iterator invalidate => segment fault
         auto target = m_map.find(pos->first);
         if (target == m_map.end())
