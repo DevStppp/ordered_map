@@ -269,11 +269,6 @@ class ordered_map
     // throw std::out_of_range
     iterator erase(const_iterator pos)
     {
-        //TODO : 확인 필요
-        //Test Code에서 end() 던졋을떄(modifier_test.h ln:94)
-        //map.find에서 못찾을 줄알았는데 결과가 end가 아니네...
-        //뭐지.....
-        //map.find가 되네...이게...되네....
         if (pos == m_list.end())
             throw std::out_of_range("out of range iterator");
 
