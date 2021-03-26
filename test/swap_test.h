@@ -73,14 +73,14 @@ auto fOrdered_Map_Copy = []() {
     }
 };
 
-TEST_CASE("ordered_map swap test")
+TEST_CASE("ordered_map swap test", "[ordered_map]")
 {
     SECTION("swap test")
     {
         REQUIRE_NOTHROW(fOrdered_Map_Swap());
         REQUIRE_NOTHROW(fOrdered_Map_STD_Swap());
     }
-};
+} //TEST_CASE
 
 TEST_CASE("operator=", "[ordered_map]")
 {
@@ -88,6 +88,5 @@ TEST_CASE("operator=", "[ordered_map]")
     {
         REQUIRE_NOTHROW(fOrdered_Map_Copy());
     }
-};
-
+} //TEST_CASE
 #endif  // SWAP_TEST_H
