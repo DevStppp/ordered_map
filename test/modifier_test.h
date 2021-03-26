@@ -4,8 +4,6 @@
 #include <catch.hpp>
 #include <string>
 
-//TODO : insert begin-end, initlist등 한꺼번에 여러개 넣는 거 result값 확인필요
-
 TEST_CASE("modifier test", "[ordered_map]")
 {
     using ordered_map = stppp::ordered_map<int32_t, std::string>;
@@ -26,6 +24,27 @@ TEST_CASE("modifier test", "[ordered_map]")
         REQUIRE(result.first->first == 99);
         REQUIRE(result.second);
         REQUIRE((++result.first)->first == 2);
+    }
+    SECTION("insert test using iterator")
+    {
+        std::vector<std::pair<const int32_t, std::string>> vTargets = {{99, "99"}, {100, "100"}};
+        std::size_t checkIndex = org_map.size();
+        REQUIRE_NOTHROW(org_map.insert(org_map.end(), vTargets.begin(), vTargets.end()));
+        auto iterator = org_map.begin();
+        std::advance(iterator, checkIndex);
+        REQUIRE(iterator++->first == 99);
+        REQUIRE(iterator->first == 100);
+    }
+    SECTION("insert duplicate key")
+    {
+        //중복되는 key 값이 있는 경우 건너 띄고 삽입한다.(duplicated key = 2)
+        std::size_t checkIndex = org_map.size();
+        REQUIRE_NOTHROW(org_map.insert(org_map.end(), {{99, "99"}, {2, "2"}, {100, "100"}}));
+        REQUIRE(org_map.size() == 5);
+        auto iterator = org_map.begin();
+        std::advance(iterator, checkIndex);
+        REQUIRE(iterator++->first == 99);
+        REQUIRE(iterator->first == 100);
     }
     SECTION("push_back test")
     {
@@ -91,7 +110,7 @@ TEST_CASE("modifier test", "[ordered_map]")
         REQUIRE_FALSE(org_map.begin()->first == 1);
 
         //throw Exception
-        REQUIRE_THROWS_AS(org_map.erase(org_map.end()),std::out_of_range);
+        REQUIRE_THROWS_AS(org_map.erase(org_map.end()), std::out_of_range);
     }
 
     SECTION("erase using key")

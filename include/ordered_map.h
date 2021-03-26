@@ -207,12 +207,21 @@ class ordered_map
         return emplace(pos, std::move(value));
     }
 
-    //TODO : result 확인 필요.
     void insert(const_iterator pos, initlist_type list)
     {
-        for (auto i : list)
+        insert(pos, list.begin(), list.end());
+    }
+
+    //생성자에서도 사용하기 때문에 Exception이 아닌 return 처리
+    template<typename InputIt>
+    void insert(const_iterator pos, InputIt first, InputIt last)
+    {
+        if (false == _check_valid_distance(first, last))
+            return;
+        for (auto i = first; i < last; ++i)
         {
-            insert(pos, i);
+            if (insert(pos, std::move(*i)).second == false)
+                continue;
         }
     }
 
@@ -358,6 +367,16 @@ class ordered_map
     bool contains(const Key& key) const
     {
         return m_map.count(key) == 0 ? false : true;
+    }
+
+  private:
+    template<typename InputIt>
+    bool _check_valid_distance(InputIt first, InputIt last)
+    {
+        auto size = std::distance(first, last);
+        if (size <= 0)
+            return false;
+        return true;
     }
 
   private:
