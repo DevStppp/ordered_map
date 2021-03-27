@@ -1,6 +1,7 @@
 #ifndef STPPP_ORDERED_MAP_H
 #define STPPP_ORDERED_MAP_H
 
+#include <algorithm>
 #include <list>
 #include <mutex>
 #include <unordered_map>
@@ -71,7 +72,14 @@ class ordered_map
     {
         {
             _writeLocker lock(m_mutex);
-            m_list = rhs.m_list;
+
+            //std::pair<const key,value> = std::pair<const key, value>
+            //build error
+            m_list.clear();
+            std::for_each(rhs.m_list.begin(), rhs.m_list.end(), [&](const value_type& i) {
+                m_list.emplace_back(i.first, i.second);
+            });
+
             m_map = rhs.m_map;
         }
         return (*this);
@@ -201,9 +209,19 @@ class ordered_map
 
     void insert(const_iterator pos, initlist_type list)
     {
-        for (auto i : list)
+        insert(pos, list.begin(), list.end());
+    }
+
+    //생성자에서도 사용하기 때문에 Exception이 아닌 return 처리
+    template<typename InputIt>
+    void insert(const_iterator pos, InputIt first, InputIt last)
+    {
+        if (false == _check_valid_distance(first, last))
+            return;
+        for (auto i = first; i < last; ++i)
         {
-            insert(pos, i);
+            if (insert(pos, std::move(*i)).second == false)
+                continue;
         }
     }
 
@@ -260,6 +278,9 @@ class ordered_map
     // throw std::out_of_range
     iterator erase(const_iterator pos)
     {
+        if (pos == m_list.end())
+            throw std::out_of_range("out of range iterator");
+
         //iterator invalidate => segment fault
         auto target = m_map.find(pos->first);
         if (target == m_map.end())
@@ -346,6 +367,16 @@ class ordered_map
     bool contains(const Key& key) const
     {
         return m_map.count(key) == 0 ? false : true;
+    }
+
+  private:
+    template<typename InputIt>
+    bool _check_valid_distance(InputIt first, InputIt last)
+    {
+        auto size = std::distance(first, last);
+        if (size <= 0)
+            return false;
+        return true;
     }
 
   private:
