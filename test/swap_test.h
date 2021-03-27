@@ -67,7 +67,7 @@ auto fOrdered_Map_Copy = []() {
     REQUIRE(copied_map.size() == 3);
 
     int32_t i = 1;
-    for(auto iter : copied_map)
+    for (auto iter : copied_map)
     {
         REQUIRE(iter.first == i++);
     }
@@ -80,7 +80,7 @@ TEST_CASE("ordered_map swap test", "[ordered_map]")
         REQUIRE_NOTHROW(fOrdered_Map_Swap());
         REQUIRE_NOTHROW(fOrdered_Map_STD_Swap());
     }
-} //TEST_CASE
+}  //TEST_CASE
 
 TEST_CASE("operator=", "[ordered_map]")
 {
@@ -88,5 +88,5 @@ TEST_CASE("operator=", "[ordered_map]")
     {
         REQUIRE_NOTHROW(fOrdered_Map_Copy());
     }
-} //TEST_CASE
+}  //TEST_CASE
 #endif  // SWAP_TEST_H

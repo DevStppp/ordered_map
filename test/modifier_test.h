@@ -124,6 +124,6 @@ TEST_CASE("modifier test", "[ordered_map]")
         //throw Exception
         REQUIRE_NOTHROW(org_map.erase(999) == 0);
     }
-} //TEST_CASE
+}  //TEST_CASE
 
 #endif  // MODIFIER_TEST_H

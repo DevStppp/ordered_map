@@ -16,19 +16,25 @@ TEST_CASE("constructor/destructor test", "[ordered_map]")
         map.emplace_back(3, "3");
         REQUIRE(map.size() == 3);
     }
-
     SECTION("initlist constructor")
     {
         ordered_map map = {{1, "1"}, {2, "2"}, {3, "3"}};
         REQUIRE(map.size() == 3);
     }
-
+    SECTION("insert duplicated key using constructor")
+    {
+        ordered_map map = {{1, "1"}, {1, "2"}, {3, "3"}};
+        REQUIRE(map.size() == 2);
+        auto iterator = map.begin();
+        REQUIRE(iterator->first == 1);
+        std::advance(iterator, 1);
+        REQUIRE(iterator->first == 3);
+    }
     SECTION("copy constructor")
     {
         ordered_map map(org_map);
         REQUIRE(map.size() == 3);
     }
-
     SECTION("move constructor")
     {
         REQUIRE_FALSE(org_map.empty());
