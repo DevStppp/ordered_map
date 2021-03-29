@@ -51,10 +51,9 @@ class ordered_map
         insert(end(), initlist);
     }
 
-    ordered_map(const ordered_map& rhs) noexcept
-      : m_list(rhs.m_list)
-      , m_map(rhs.m_map)
+    ordered_map(const ordered_map& rhs)
     {
+        (*this) = rhs;
     }
 
     ordered_map(ordered_map&& rhs) noexcept
@@ -68,20 +67,14 @@ class ordered_map
         clear();
     }
 
-    ordered_map& operator=(const ordered_map& rhs) noexcept
+    ordered_map& operator=(const ordered_map& rhs)
     {
-        {
-            _writeLocker lock(m_mutex);
+        m_list.clear();
+        m_map.clear();
 
-            //std::pair<const key,value> = std::pair<const key, value>
-            //build error
-            m_list.clear();
-            std::for_each(rhs.m_list.begin(), rhs.m_list.end(), [&](const value_type& i) {
-                m_list.emplace_back(i.first, i.second);
-            });
+        for (auto i : rhs)
+            emplace_back(i);
 
-            m_map = rhs.m_map;
-        }
         return (*this);
     }
 

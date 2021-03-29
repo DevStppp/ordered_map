@@ -65,7 +65,8 @@ auto fOrdered_Map_Copy = []() {
     }
     //scope for delete org_map
     REQUIRE(copied_map.size() == 3);
-
+    REQUIRE_NOTHROW(copied_map.begin()->second = "222");
+    REQUIRE(copied_map[1] == "222");
     int32_t i = 1;
     for (auto iter : copied_map)
     {

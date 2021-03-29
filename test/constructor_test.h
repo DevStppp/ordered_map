@@ -34,6 +34,8 @@ TEST_CASE("constructor/destructor test", "[ordered_map]")
     {
         ordered_map map(org_map);
         REQUIRE(map.size() == 3);
+        REQUIRE_NOTHROW(map.begin()->second = "222");
+        REQUIRE(map[1] == "222");
     }
     SECTION("move constructor")
     {
